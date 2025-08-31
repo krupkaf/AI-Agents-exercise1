@@ -1,0 +1,11 @@
+[project]
+name = "exercise1"
+version = "0.1.0"
+description = "Praktické cvičení - Lekce 1 [AI Agenti]"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "litellm",
+    "python-dotenv>=1.0.1",
+    "docstring-parser",
+]
