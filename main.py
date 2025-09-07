@@ -221,15 +221,25 @@ if __name__ == "__main__":
         else "openrouter/openai/gpt-4-turbo"
     )
 
+    MAX_STEP = (
+        int(os.environ.get("MAX_STEP"))
+        if os.environ.get("MAX_STEP") is not None
+        else 15
+    )
+
     system_prompt = (
         "Jsi expert na logické hádanky. Tvým úkolem je vyřešit hádanku 'Vlk, koza a zelí' krok za krokem."
         "Cílem je dostat vlka, kozu a zelí na pravý břeh."
+        "NEMÁŠ vlastní znalosti o světě hádanky. Jediný způsob, jak můžeš interagovat se světem nebo zjišťovat jeho stav, je prostřednictvím poskytnutých nástrojů."
+        "NESMÍŠ odpovídat přímo uživateli, dokud není úkol kompletně splněn."
+        "VŽDY MUSÍŠ použít nástroj v každém kroku, dokud nedosáhneš finálního stavu."
         "DŮSLEDNĚ DODRŽUJ TENTO POSTUP MYŠLENÍ:"
         "1. Pokud si nejsi jist s aktuálním stavem, nejprve si zjisti aktuální stav pomocí nástroje `get_current_state`."
-        "2. Na základě stavu, a hlavně polohy loďky, zvaž všechny možné platné tahy."
+        "2. Na základě stavu, a hlavně polohy loďky, zvaž všechny možné platné tahy a proveď přesun pomocí `move_across_river`."
         "3. Pamatuj, že převozník se může vrátit i sám! Tah 'move_across_river' s pasažérem 'nothing' je často klíčový."
         "4. Vyber nejlepší tah a proveď ho."
-        "5. Pokud nástroj vrátí chybu, pečlivě si přečti její důvod a naplánuj nový, správný tah. Neopakuj chyby."
+        "5. Opakuj, dokud nejsou všechny položky na pravém břehu."
+        "6. Pokud nástroj vrátí chybu, pečlivě si přečti její důvod a naplánuj nový, správný tah. Neopakuj chyby."
     )
 
     puzzle_env = PuzzleEnvironment()
@@ -247,8 +257,7 @@ if __name__ == "__main__":
     print("--- START ŘEŠENÍ HÁDANKY ---")
     print(f"Počáteční stav:\n{puzzle_env.get_state_description()}\n")
 
-    max_steps = 15
-    for step in range(1, max_steps + 1):
+    for step in range(1, MAX_STEP + 1):
         print(f"--- KROK {step} ---")
 
         response = completion(
@@ -284,11 +293,16 @@ if __name__ == "__main__":
                     }
                 )
         else:
-            print(f"Agent říká: {response_message.content}\n")
-
-        if puzzle_env.is_solved():
-            print("🎉 HÁDANKA ÚSPĚŠNĚ VYŘEŠENA! 🎉")
-            print(f"Finální stav:\n{puzzle_env.get_state_description()}")
+            print(f"Agent ukončil práci a říká: {response_message.content}\n")
+            # Tímto práce agenta končí - již vratil finalní odpověd.
+            if puzzle_env.is_solved():
+                print("🎉 OVĚŘENO: Agent hádanku skutečně vyřešil!")
+            else:
+                print(
+                    "❌ CHYBA: Agent si myslel, že hádanku vyřešil (nebo se zasekl), ale neudělal to.")
+                print(
+                    f"Skutečný finální stav:\n{puzzle_env.get_state_description()}")
             break
     else:
-        print("Agentovi se nepodařilo vyřešit hádanku v daném počtu kroků.")
+        # Tento blok se spustí, pokud smyčka doběhla do konce bez 'break'
+        print("❌ CHYBA: Agentovi se nepodařilo dokončit úkol v daném počtu kroků (nikdy nepřestal volat nástroje).")
