@@ -51,6 +51,11 @@ Agent navrhuje akci: move_across_river s argumenty {'passenger': 'goat'}
 Výsledek nástroje: {"status": "úspěch", "popis": "Převozník úspěšně převezl 'goat'.", "novy_stav": "Levý břeh: [prázdný].\nPravý břeh: [cabbage, goat, wolf].\nLoďka s převozníkem je na pravém břehu."}
 
 --- KROK 9 ---
-Agent ukončil práci a říká: Všechny položky byly úspěšně převezeny na pravý břeh. Úkol je splněn.
+Agent navrhuje akci: check_if_solved s argumenty {}
+--- Nástroj 'check_if_solved' byl zavolán. ---
+Výsledek nástroje: Potvrzeno. Hádanka je skutečně vyřešena. Nyní můžeš napsat finální zprávu.
+
+--- KROK 10 ---
+Agent ukončil práci a říká: Vlk, koza a zelí jsou bezpečně na pravém břehu. Lze se vrátit a odpočívat.
 
 🎉 OVĚŘENO: Agent hádanku skutečně vyřešil!

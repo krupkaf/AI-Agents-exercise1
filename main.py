@@ -148,6 +148,19 @@ class AgentToolbox:
 
         return json.dumps(response, ensure_ascii=False)
 
+    def check_if_solved(self):
+        """
+        Zkontroluje, zda byla hádanka úspěšně vyřešena.
+        Tento nástroj volej, vždy když si myslíš, že je hadanka vyřešena, aby jsi si to ověřil.
+        """
+        print("--- Nástroj 'check_if_solved' byl zavolán. ---")
+
+        if self.puzzle_env.is_solved():
+            return "Potvrzeno. Hádanka je skutečně vyřešena. Nyní můžeš napsat finální zprávu."
+        else:
+            current_state = self.puzzle_env.get_state_description()
+            return f"Negativní. Hádanka ještě není vyřešena. Pokračuj v práci. Aktuální stav je:\n{current_state}"
+
 
 def generate_tool_schema(func):
     """
@@ -245,7 +258,8 @@ if __name__ == "__main__":
     puzzle_env = PuzzleEnvironment()
     toolbox = AgentToolbox(puzzle_env)
 
-    tools_to_register = [toolbox.get_current_state, toolbox.move_across_river]
+    tools_to_register = [toolbox.get_current_state,
+                         toolbox.move_across_river, toolbox.check_if_solved]
     tools_schemas = [generate_tool_schema(func) for func in tools_to_register]
 
     available_tools = {func.__name__: func for func in tools_to_register}

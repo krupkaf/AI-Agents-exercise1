@@ -119,6 +119,37 @@ class TestAgentToolbox(unittest.TestCase):
             "Stav prostředí by se po logisticky nemožném tahu neměl měnit.",
         )
 
+    def test_check_if_solved_when_not_solved(self, mocked_print):
+        """
+        Testuje nástroj check_if_solved ve výchozím (nevyřešeném) stavu.
+        """
+        # Akce: Zavoláme nástroj
+        result_string = self.toolbox.check_if_solved()
+
+        # Ověření: Zkontrolujeme, zda odpověď obsahuje negativní zprávu
+        self.assertIn("Negativní", result_string)
+        self.assertIn("není vyřešena", result_string)
+        # Ověříme, že odpověď obsahuje i aktuální stav pro pomoc agentovi
+        self.assertIn("Levý břeh:", result_string)
+
+    def test_check_if_solved_when_solved(self, mocked_print):
+        """
+        Testuje nástroj check_if_solved, když je hádanka ve vyřešeném stavu.
+        """
+        # Příprava: Manuálně nastavíme prostředí do vyřešeného stavu
+        self.env.state = {
+            "left_bank": set(),
+            "right_bank": {"wolf", "goat", "cabbage"},
+            "boat_location": "right"
+        }
+
+        # Akce: Zavoláme nástroj
+        result_string = self.toolbox.check_if_solved()
+
+        # Ověření: Zkontrolujeme, zda odpověď obsahuje potvrzující zprávu
+        self.assertIn("Potvrzeno", result_string)
+        self.assertIn("je skutečně vyřešena", result_string)
+
 
 if __name__ == "__main__":
     unittest.main()
