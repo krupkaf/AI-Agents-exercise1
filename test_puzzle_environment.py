@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-from main import PuzzleEnvironment
+from puzzle_environment import PuzzleEnvironment
 
 
 class TestPuzzleEnvironment(unittest.TestCase):

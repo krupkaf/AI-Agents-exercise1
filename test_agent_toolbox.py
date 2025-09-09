@@ -3,7 +3,8 @@ import unittest
 import json
 import copy
 from unittest.mock import patch
-from main import PuzzleEnvironment, AgentToolbox
+from puzzle_environment import PuzzleEnvironment
+from main import AgentToolbox
 
 
 @patch("builtins.print")
