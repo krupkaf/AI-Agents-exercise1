@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
 from typing import Literal
-from main import generate_tool_schema
+from agent_tools import generate_tool_schema
 
 
 class TestGenerateToolSchema(unittest.TestCase):

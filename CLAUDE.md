@@ -26,6 +26,7 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 
 ## Project Structure
 - `main.py` - Main puzzle solver with LLM integration
+- `agent_tools.py` - AgentToolbox class and tool schema generation
 - `puzzle_environment.py` - PuzzleEnvironment class (Wolf, Goat, Cabbage puzzle logic)
 - `test_*.py` - Unit tests for components
 - `.env` - Environment variables (not committed)

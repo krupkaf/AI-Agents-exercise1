@@ -4,7 +4,7 @@ import json
 import copy
 from unittest.mock import patch
 from puzzle_environment import PuzzleEnvironment
-from main import AgentToolbox
+from agent_tools import AgentToolbox
 
 
 @patch("builtins.print")
