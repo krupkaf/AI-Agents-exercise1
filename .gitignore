@@ -1,3 +1,4 @@
 .env
 .venv
 *.pyc
+cc_init.bash

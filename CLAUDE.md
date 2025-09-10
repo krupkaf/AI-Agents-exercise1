@@ -6,10 +6,13 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 ## Project Commands
 
 ### Development
-- `python main.py` - Run the puzzle solver agent
-- `python test_agent_toolbox.py` - Run toolbox tests
-- `python test_puzzle_environment.py` - Run puzzle environment tests
-- `python test_schema_generator.py` - Run schema generator tests
+- `uv run python main.py` - Run the puzzle solver agent
+- `uv run python test_agent_toolbox.py` - Run toolbox tests
+- `uv run python test_puzzle_environment.py` - Run puzzle environment tests
+- `uv run python test_schema_generator.py` - Run schema generator tests
+
+### Testing
+- `uv run python -m unittest discover -s . -p "test_*.py" -v` - Run all unit tests
 
 ### Linting and Type Checking
 - `ruff check .` - Run linting
