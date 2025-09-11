@@ -27,3 +27,25 @@ Agent řeší hádanku v cyklu:
 3.  **Provede tah:** Zavolá nástroj `move_across_river()` s vybraným pasažérem.
 4.  **Získá zpětnou vazbu:** Nástroj vrátí buď úspěch a nový stav, nebo chybu s vysvětlením, proč tah není možný.
 5.  **Opakuje:** Agent pokračuje, dokud není hádanka vyřešena.
+
+## Architektury nástrojů
+
+Projekt nabízí dvě implementace nástrojů pro AI agenta:
+
+### 1. AgentToolbox (Přímé volání funkcí)
+- **Soubor:** `agent_tools.py`
+- **Popis:** Klasická implementace pomocí třídy `AgentToolbox` s metodami, které může LLM volat přímo
+- **Použití:** V `main.py` pro přímou integraci s LLM pomocí OpenAI tool calling
+- **Výhody:** Jednoduchost, přímá integrace, rychlé prototypování
+
+### 2. MCP Server (Model Context Protocol)
+- **Soubor:** `mcp_server.py`
+- **Popis:** Implementace pomocí Model Context Protocol (MCP) standardu
+- **Použití:** Poskytuje nástroje přes standardizované MCP rozhraní
+- **Výhody:** Standardizace, možnost vzdáleného použití, lepší izolace, rozšiřitelnost
+
+Obě implementace používají stejný `PuzzleEnvironment` pro logiku hádanky a poskytují identické nástroje:
+- `get_current_state()` - Získání aktuálního stavu
+- `move_across_river(passenger)` - Přesun pasažéra přes řeku  
+- `check_if_solved()` - Kontrola vyřešení hádanky
+- `reset_puzzle()` - Reset do počátečního stavu (pouze MCP)

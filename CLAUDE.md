@@ -7,9 +7,11 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 
 ### Development
 - `uv run python main.py` - Run the puzzle solver agent
+- `uv run python mcp_server.py` - Run standalone MCP server (stdio transport)
 - `uv run python test_agent_toolbox.py` - Run toolbox tests
 - `uv run python test_puzzle_environment.py` - Run puzzle environment tests
 - `uv run python test_schema_generator.py` - Run schema generator tests
+- `uv run python test_mcp_server.py` - Run MCP server tests
 
 ### Testing
 - `uv run python -m unittest discover -s . -p "test_*.py" -v` - Run all unit tests
@@ -27,6 +29,7 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 ## Project Structure
 - `main.py` - Main puzzle solver with LLM integration
 - `agent_tools.py` - AgentToolbox class and tool schema generation
+- `mcp_server.py` - MCP server implementation for puzzle tools
 - `puzzle_environment.py` - PuzzleEnvironment class (Wolf, Goat, Cabbage puzzle logic)
 - `test_*.py` - Unit tests for components
 - `.env` - Environment variables (not committed)

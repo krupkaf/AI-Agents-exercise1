@@ -8,4 +8,5 @@ dependencies = [
     "litellm",
     "python-dotenv>=1.0.1",
     "docstring-parser",
+    "mcp>=1.0.0",
 ]
