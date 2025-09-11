@@ -44,6 +44,18 @@ Projekt nabízí dvě implementace nástrojů pro AI agenta:
 - **Použití:** Poskytuje nástroje přes standardizované MCP rozhraní
 - **Výhody:** Standardizace, možnost vzdáleného použití, lepší izolace, rozšiřitelnost
 
+### Přepínání mezi implementacemi
+
+Projekt umožňuje snadné přepínání mezi oběma přístupy pomocí proměnné prostředí:
+
+```bash
+# Použití klasického AgentToolbox (výchozí)
+USE_MCP=false uv run python main.py
+
+# Použití MCP serveru
+USE_MCP=true uv run python main.py
+```
+
 Obě implementace používají stejný `PuzzleEnvironment` pro logiku hádanky a poskytují identické nástroje:
 - `get_current_state()` - Získání aktuálního stavu
 - `move_across_river(passenger)` - Přesun pasažéra přes řeku  

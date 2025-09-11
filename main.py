@@ -5,6 +5,55 @@ from dotenv import load_dotenv
 import json
 from puzzle_environment import PuzzleEnvironment
 from agent_tools import AgentToolbox, generate_tool_schema
+from mcp_server import create_mcp_server
+
+
+def create_tool_interface(use_mcp=False):
+    """
+    Vytvoří rozhraní pro nástroje - buď přes MCP server nebo přímou class.
+    Vrací tuple (tools_schemas, available_tools, puzzle_env).
+    """
+    if use_mcp:
+        # Použij MCP server
+        mcp_server = create_mcp_server()
+        mcp_tools = mcp_server.get_tools()
+        
+        # Převeď MCP tools na formát pro litellm
+        tools_schemas = []
+        for tool in mcp_tools:
+            schema = {
+                "type": "function",
+                "function": {
+                    "name": tool["name"],
+                    "description": tool["description"],
+                    "parameters": tool["inputSchema"]
+                }
+            }
+            tools_schemas.append(schema)
+        
+        # Vytvořím wrapper funkce pro MCP volání
+        def create_mcp_wrapper(tool_name):
+            def wrapper(**kwargs):
+                result = mcp_server.call_tool(tool_name, kwargs)
+                if result.get("isError", False):
+                    return result["content"][0]["text"]
+                return result["content"][0]["text"]
+            wrapper.__name__ = tool_name
+            return wrapper
+        
+        available_tools = {tool["name"]: create_mcp_wrapper(tool["name"]) for tool in mcp_tools}
+        puzzle_env = mcp_server.puzzle_env
+        
+    else:
+        # Použij přímou class
+        puzzle_env = PuzzleEnvironment()
+        toolbox = AgentToolbox(puzzle_env)
+        
+        tools_to_register = [toolbox.get_current_state, toolbox.move_across_river, toolbox.check_if_solved]
+        tools_schemas = [generate_tool_schema(func) for func in tools_to_register]
+        available_tools = {func.__name__: func for func in tools_to_register}
+    
+    return tools_schemas, available_tools, puzzle_env
 
 
 if __name__ == "__main__":
@@ -21,6 +70,8 @@ if __name__ == "__main__":
         if os.environ.get("MAX_STEP") is not None
         else 15
     )
+
+    USE_MCP = os.environ.get("USE_MCP", "false").lower() == "true"
 
     system_prompt = (
         "Jsi expert na logické hádanky. Tvým úkolem je vyřešit hádanku 'Vlk, koza a zelí' krok za krokem."
@@ -51,18 +102,13 @@ if __name__ == "__main__":
         "- Vlk a koza nesmí být sami, koza a zelí nesmí být sami\n"
     )
 
-    puzzle_env = PuzzleEnvironment()
-    toolbox = AgentToolbox(puzzle_env)
-
-    tools_to_register = [toolbox.get_current_state,
-                         toolbox.move_across_river, toolbox.check_if_solved]
-    tools_schemas = [generate_tool_schema(func) for func in tools_to_register]
-
-    available_tools = {func.__name__: func for func in tools_to_register}
+    # Vytvořím tool interface podle nastavení USE_MCP
+    tools_schemas, available_tools, puzzle_env = create_tool_interface(USE_MCP)
 
     messages = [{"role": "system", "content": system_prompt}]
 
-    print(f"\nMODEL: {MODEL}\n")
+    print(f"\nMODEL: {MODEL}")
+    print(f"USE_MCP: {USE_MCP}\n")
 
     print("--- START ŘEŠENÍ HÁDANKY ---")
     print(f"Počáteční stav:\n{puzzle_env.get_state_description()}\n")

@@ -6,7 +6,8 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 ## Project Commands
 
 ### Development
-- `uv run python main.py` - Run the puzzle solver agent
+- `uv run python main.py` - Run the puzzle solver agent (uses AgentToolbox by default)
+- `USE_MCP=true uv run python main.py` - Run puzzle solver with MCP server
 - `uv run python mcp_server.py` - Run standalone MCP server (stdio transport)
 - `uv run python test_agent_toolbox.py` - Run toolbox tests
 - `uv run python test_puzzle_environment.py` - Run puzzle environment tests
@@ -25,6 +26,9 @@ Napiš Python skript, který zavolá LLM API, použije nástroj (např. výpoče
 - Set `OPENROUTER_API_KEY` with your API key
 - Configure `MODEL` (default: "openrouter/openai/gpt-4-turbo")
 - Set `MAX_STEP` for maximum solver iterations (default: 15)
+- Set `USE_MCP` to choose tool implementation:
+  - `USE_MCP=false` - Use direct AgentToolbox class (default)
+  - `USE_MCP=true` - Use MCP server implementation
 
 ## Project Structure
 - `main.py` - Main puzzle solver with LLM integration
